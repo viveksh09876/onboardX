@@ -6,6 +6,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { seedUsers } from "./utils/seed";
 import authRoutes from './routes/authRoutes' 
+import { authMiddleware } from "./middleware/authMiddleware";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -17,6 +18,14 @@ app.use("/auth", authRoutes);
 
 app.get('/health', (req, res) => {
     res.send({ "status": "OK" })
+});
+
+app.get('/protected', authMiddleware(), (req, res) => {
+    res.json({ message: "authenticated!", user: req.user });
+});
+
+app.get('/analyst-only', authMiddleware(['ANALYST']), (req, res) => {
+    res.json({ message: "Analyst allowed", user: req.user });
 });
 
 async function startServer() {
