@@ -1,4 +1,5 @@
 import GraphQLJSON from "graphql-type-json";
+import { requireAuth, requireRole } from "../auth";
 
 const resolvers = {
     JSON: GraphQLJSON,
@@ -11,11 +12,21 @@ const resolvers = {
             ]
         },
 
-        getDynamicQuestions: async (_parent: unknown, _args: unknown, _context: unknown) => {
+        getDynamicQuestions: async (
+            _parent: unknown,
+            args: { screen: string, previousData?: any },
+            context: any
+        ) => {
+            requireAuth(context)
             return [];
         },
 
-        getApplicationVersion: async (_parent: unknown, _args: unknown, _context: unknown) => {
+        getApplicationVersion: async (
+            _parent: unknown,
+            args: { id: string, version: number },
+            context: any
+        ) => {
+            requireRole(context, ["QC"])
             return [];
         }
     }
