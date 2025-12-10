@@ -1,28 +1,28 @@
-import bcrypt from 'bcryptjs';
-import { User } from '../models/User';
+import bcrypt from "bcryptjs";
+import { User } from "../models/User";
 
-//function to save dummy users in db
 export async function seedUsers() {
-    const count = await User.countDocuments();
+  const users = [
+    { email: "user1@test.com", password: "password", role: "USER", name: "user1" },
+    { email: "analyst1@test.com", password: "password", role: "ANALYST", name: "analyst1" },
+    { email: "qc1@test.com", password: "password", role: "QC", name: "qc1" }
+  ];
 
-    if (count > 0) {
-        return;
+  for (const u of users) {
+    const exists = await User.findOne({ email: u.email });
+    if (exists) {
+      console.log(`User already exists: ${u.email}`);
+      continue;
     }
 
-    const users = [
-        { username: "user1", password: 'password', role: "USER"},
-        { username: "analyst1", password: 'password', role: "ANALYST"},
-        { username: "qc1", password: 'password', role: "QC"}
-    ];
+    const hashed = await bcrypt.hash(u.password, 10);
+    await User.create({
+      email: u.email,
+      password: hashed,
+      role: u.role,
+      name: u.name
+    });
 
-    for (const u of users) {
-        const passwordHash = await bcrypt.hash(u.password, 10);
-        await User.create({
-            username: u.username,
-            passwordHash,
-            role: u.role
-        });
-    }
-
-    console.log("Dummy users created")
+    console.log("Created user:", u.email);
+  }
 }

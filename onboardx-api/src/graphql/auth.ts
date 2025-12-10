@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { AuthPayload } from '../utils/jwt';
+import { AuthPayload } from '../types/authTypes';
 
 function assert(condition: boolean, message: string, code = "FORBIDDEN", status = 403) {
     if (!condition) {

@@ -6,8 +6,8 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import typeDefs from "./schema";
 import resolvers from "./resolvers";
 import { verifyToken } from "../utils/jwt";
-import { Request, Response } from "express";
 import models from "../models";
+import { GraphQLContext } from "./context";
 
 
 export async function setupApollo(app: any) {
@@ -31,7 +31,7 @@ export async function setupApollo(app: any) {
     cors(),
     bodyParser.json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req }: any) => {
+      context: async ({ req }): Promise<GraphQLContext> => {
         const authHeader = req.headers.authorization || "";
         const token = authHeader.startsWith("Bearer ")
           ? authHeader.split(" ")[1]

@@ -3,24 +3,28 @@ import mongoose, { Schema, Document } from 'mongoose';
 export type UserRole = "USER" | "ANALYST" | "QC";
 
 export interface IUSER extends Document {
-    username: string;
-    passwordHash: string;
+    email: string;
+    password: string;
     role: UserRole;
+    name?: string
 }
 
 const userSchema = new Schema<IUSER>({
-    username: {
+    email: {
         type: String,
         unique: true,
         required: true
     },
-    passwordHash: {
+    name: {
+        type: String,
+    },
+    password: {
         type: String,
         required: true
     },
     role: {
         type: String,
-        enum: ["USER", "ANALYST", "QC"],
+        enum: ["USER", "ANALYST", "QC", "ADMIN"],
         required: true
     }
 });

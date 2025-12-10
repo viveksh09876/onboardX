@@ -1,11 +1,7 @@
 import jwt from 'jsonwebtoken';
+import { AuthPayload } from '../types/authTypes';
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
-export type AuthPayload = {
-    userId: string;
-    username: string;
-    role: "USER" | "ANALYST" | "QC"
-}
 
 //generate jwt token
 export function generateToken(payload: AuthPayload): string {

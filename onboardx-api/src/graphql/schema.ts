@@ -13,6 +13,13 @@ const typeDefs = gql`
         label: String!
     }
 
+    type User {
+        id: ID!
+        email: String!
+        role: String!
+        name: String
+    }
+
     type AdditionalQuestion {
         questionId: ID!
         type: String!

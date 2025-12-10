@@ -7,24 +7,24 @@ const router = express.Router();
 
 router.post("/login", async (req, res) => {
     try {
-        const { username, password } = req?.body || {};
+        const { email, password } = req?.body || {};
         
         //validate request body
-        if (!username || !password) {
+        if (!email || !password) {
             return res.status(401).json({
-                message: "username & password is required",
+                message: "email & password is required",
             });
         }
 
         //find user in DB
-        const user  = await User.findOne({ username }).exec();
+        const user  = await User.findOne({ email }).exec();
 
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials!" });
         }
 
         //compare password
-        const isMatch = await bcrypt.compare(password, user?.passwordHash || "");
+        const isMatch = await bcrypt.compare(password, user?.password || "");
 
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials!" });
@@ -32,11 +32,12 @@ router.post("/login", async (req, res) => {
         
         //build token payload & generate jwt
         const payload = {
-            userId: user?._id.toString() || "",
-            username: user?.username || "",
-            role: user?.role || "USER"
+            id: user?._id.toString() || "",
+            email: user.email,
+            role: user?.role || "USER",
+            name: user.name
         }
-        console.log(payload)
+
         const token = generateToken(payload);
 
         return res.json({

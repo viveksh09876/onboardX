@@ -1,7 +1,7 @@
-import { AuthPayload, verifyToken } from "../utils/jwt";
+import { verifyToken } from "../utils/jwt";
 import { UserRole } from "../models/User";
+import { AuthPayload } from "../types/authTypes";
 import { Request, Response, NextFunction } from "express";
-import { decode } from "punycode";
 
 export function authMiddleware(requiredRoles?: UserRole[]) {
     return (req: Request, res: Response, next: NextFunction) => {

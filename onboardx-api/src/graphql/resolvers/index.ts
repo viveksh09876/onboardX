@@ -1,5 +1,6 @@
 import GraphQLJSON from "graphql-type-json";
 import { requireAuth, requireRole } from "../auth";
+import { GraphQLContext } from "../context";
 
 const resolvers = {
     JSON: GraphQLJSON,
@@ -15,7 +16,7 @@ const resolvers = {
         getDynamicQuestions: async (
             _parent: unknown,
             args: { screen: string, previousData?: any },
-            context: any
+            context: GraphQLContext
         ) => {
             requireAuth(context)
             return [];
@@ -24,7 +25,7 @@ const resolvers = {
         getApplicationVersion: async (
             _parent: unknown,
             args: { id: string, version: number },
-            context: any
+            context: GraphQLContext
         ) => {
             requireRole(context, ["QC"])
             return [];
