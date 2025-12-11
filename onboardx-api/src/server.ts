@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import { seedUsers } from "./utils/seed";
 import { seedReferenceData } from "./utils/seedReferenceData"
+import { seedDynamicQuestions } from "./utils/seedDynamicQuestions";
 import authRoutes from './routes/authRoutes' 
 import { authMiddleware } from "./middleware/authMiddleware";
 import { globalRateLimiter, loginRateLimiter, graphqlRateLimiter } from "./middleware/rateLimiter";
@@ -43,6 +44,7 @@ async function startServer() {
             console.log("Connected to mongodb");
             await seedUsers();
             await seedReferenceData(); 
+            await seedDynamicQuestions();
             await setupApollo(app);
             app.listen(PORT, () => {
                 console.log(`Server running on port ${PORT}`);

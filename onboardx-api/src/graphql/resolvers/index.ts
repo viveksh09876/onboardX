@@ -1,6 +1,7 @@
 import GraphQLJSON from "graphql-type-json";
 import { requireAuth, requireRole } from "../auth";
 import { GraphQLContext } from "../context";
+import { resolveDynamicQuestions } from "../../services/dynamicQuerstionEngine";
 
 const resolvers = {
     JSON: GraphQLJSON,
@@ -16,8 +17,13 @@ const resolvers = {
             args: { screen: string, previousData?: any },
             context: GraphQLContext
         ) => {
-            requireAuth(context)
-            return [];
+            const user = requireAuth(context);
+            const { screen, previousData } = args;
+            const questionSet = await context.models.DynamicQuestionSet.findOne({ screen });
+            if (!questionSet) return [];
+            
+            const resolved = resolveDynamicQuestions(questionSet, previousData);
+            return resolved;
         },
 
         getApplicationVersion: async (
