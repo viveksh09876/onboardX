@@ -1,12 +1,11 @@
 import { User } from "./User";
-// Add your other models here when created:
 // import Application from "./Application";
-// import ReferenceData from "./ReferenceData";
+import ReferenceData from "./ReferenceData";
 
 const models = {
   User,
   // Application,
-  // ReferenceData,
+  ReferenceData,
 };
 
 export default models;

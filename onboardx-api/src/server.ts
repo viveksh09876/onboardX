@@ -6,6 +6,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import { seedUsers } from "./utils/seed";
+import { seedReferenceData } from "./utils/seedReferenceData"
 import authRoutes from './routes/authRoutes' 
 import { authMiddleware } from "./middleware/authMiddleware";
 import { globalRateLimiter, loginRateLimiter, graphqlRateLimiter } from "./middleware/rateLimiter";
@@ -41,6 +42,7 @@ async function startServer() {
         await mongoose.connect(MONGO_URI).then(async() => {
             console.log("Connected to mongodb");
             await seedUsers();
+            await seedReferenceData(); 
             await setupApollo(app);
             app.listen(PORT, () => {
                 console.log(`Server running on port ${PORT}`);

@@ -6,11 +6,9 @@ const resolvers = {
     JSON: GraphQLJSON,
 
     Query: {
-        getCountries: async () => {
-            return [
-                { code: "IN", name: "India" },
-                { code: "US", name: "United States" }
-            ]
+        getCountries: async (_parent: unknown, _args: unknown, context: GraphQLContext) => {
+            // Public endpoint — no authentication needed
+            return context.models.ReferenceData.find({ type: "COUNTRY" }).lean();
         },
 
         getDynamicQuestions: async (
