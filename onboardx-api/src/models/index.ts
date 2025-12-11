@@ -1,11 +1,11 @@
 import { User } from "./User";
 import DynamicQuestionSet from "./DynamicQuestionSet";
-// import Application from "./Application";
+import ApplicationVersion from "./ApplicationVersion";
 import ReferenceData from "./ReferenceData";
 
 const models = {
   User,
-  // Application,
+  ApplicationVersion,
   ReferenceData,
   DynamicQuestionSet
 };

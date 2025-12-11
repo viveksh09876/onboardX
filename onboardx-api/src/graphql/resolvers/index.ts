@@ -2,6 +2,7 @@ import GraphQLJSON from "graphql-type-json";
 import { requireAuth, requireRole } from "../auth";
 import { GraphQLContext } from "../context";
 import { resolveDynamicQuestions } from "../../services/dynamicQuerstionEngine";
+import { getApplicationVersion as fetchApplicationVersion } from "../../services/applicationVersionService";
 
 const resolvers = {
     JSON: GraphQLJSON,
@@ -21,7 +22,7 @@ const resolvers = {
             const { screen, previousData } = args;
             const questionSet = await context.models.DynamicQuestionSet.findOne({ screen });
             if (!questionSet) return [];
-            
+
             const resolved = resolveDynamicQuestions(questionSet, previousData);
             return resolved;
         },
@@ -31,8 +32,11 @@ const resolvers = {
             args: { id: string, version: number },
             context: GraphQLContext
         ) => {
-            requireRole(context, ["QC"])
-            return [];
+            requireRole(context, ["QC"]);
+            const { id, version } = args;
+            const appVer = await fetchApplicationVersion(id, version);
+            if (!appVer) return null;
+            return appVer.formData ?? null;
         }
     }
 };
