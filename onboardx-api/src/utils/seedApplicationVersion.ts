@@ -39,7 +39,8 @@ export async function seedApplicationVersion() {
     }
   };
 
-  await ApplicationVersion.create(sample);
+    const doc = new ApplicationVersion(sample);
+    await doc.save();
 
   console.log("Sample ApplicationVersion seeded successfully");
 }
