@@ -1,14 +1,7 @@
-import AppLayout from "./components/layout/AppLayout";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-
-  return (
-     <AppLayout>
-        <div className="text-xl font-semibold">
-          Host App content
-        </div>
-     </AppLayout>
-  );
+  return <AppRoutes />
 }
 
 export default App;
