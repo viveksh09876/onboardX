@@ -1,10 +1,14 @@
+import AppLayout from "./components/layout/AppLayout";
+
 function App() {
 
   return (
-     <div className="bg-red-200 p-6 rounded-xl">
-      Tailwind is working!
-    </div>
-  )
+     <AppLayout>
+        <div className="text-xl font-semibold">
+          Host App content
+        </div>
+     </AppLayout>
+  );
 }
 
-export default App
+export default App;
