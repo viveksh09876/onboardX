@@ -1,3 +1,7 @@
+import { Suspense } from "react";
+import { MainApp } from "../modules/mainApp";
+import { AnalystApp } from "../modules/analystApp";
+import { QCApp } from "../modules/qcApp";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import RoleGuard from "../components/common/RoleGuard";
@@ -18,14 +22,23 @@ const AppRoutes: React.FC = () => {
               <AppLayout>
                 <Routes>
                   <Route path="dashboard" element={<Dashboard />} />
-                  <RoleGuard allowedRoles={[ROLES.USER]}>
-                    <div>Main Application (MFE)</div>
-                  </RoleGuard>
+                  <Route
+                    path="main/*"
+                    element={
+                      <RoleGuard allowedRoles={[ROLES.USER]}>
+                        <Suspense fallback={<div>Loading Main App...</div>}>
+                          <MainApp />
+                        </Suspense>
+                      </RoleGuard>
+                    }
+                  />
                   <Route
                     path="analyst/*"
                     element={
                       <RoleGuard allowedRoles={[ROLES.ANALYST]}>
-                        <div>Analyst Portal (MFE)</div>
+                        <Suspense fallback={<div>Loading Analyst App...</div>}>
+                          <AnalystApp />
+                        </Suspense>
                       </RoleGuard>
                     }
                   />
@@ -33,7 +46,9 @@ const AppRoutes: React.FC = () => {
                     path="qc/*"
                     element={
                       <RoleGuard allowedRoles={[ROLES.QC]}>
-                        <div>QC Portal (MFE)</div>
+                        <Suspense fallback={<div>Loading QC App...</div>}>
+                          <QCApp />
+                        </Suspense>
                       </RoleGuard>
                     }
                   />
