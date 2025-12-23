@@ -22,6 +22,9 @@ export default defineConfig({
       ],
     }),
   ],
+  server: {
+    port: 5001, // IMPORTANT: must match host config
+  },
   build: {
     target: "esnext",
   },
