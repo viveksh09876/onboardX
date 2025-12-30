@@ -6,6 +6,7 @@ export type Domain = "personal" | "business" | "teams" | "products";
 export interface FormState {
   formData: Record<Domain, Record<string, any>>;
   additionalQuestions: any[];
+  errors: Record<Domain, Record<string, any>>;
 }
 
 const initialState: FormState = {
@@ -16,6 +17,12 @@ const initialState: FormState = {
     products: {},
   },
   additionalQuestions: [],
+  errors: {
+    personal: {},
+    business: {},
+    teams: {},
+    products: {},
+  },
 };
 
 const formSlice = createSlice({
@@ -42,10 +49,29 @@ const formSlice = createSlice({
     resetForm() {
       return initialState;
     },
+
+    setErrors(
+      state,
+      action: PayloadAction<{
+        domain: Domain;
+        errors: Record<string, string>;
+      }>
+    ) {
+      state.errors[action.payload.domain] = action.payload.errors;
+    },
+
+    clearErrors(state, action: PayloadAction<{ domain: Domain }>) {
+      state.errors[action.payload.domain] = {};
+    },
   },
 });
 
-export const { updateDomainData, setAdditionalQuestions, resetForm } =
-  formSlice.actions;
+export const {
+  updateDomainData,
+  setAdditionalQuestions,
+  resetForm,
+  setErrors,
+  clearErrors,
+} = formSlice.actions;
 
 export default formSlice.reducer;

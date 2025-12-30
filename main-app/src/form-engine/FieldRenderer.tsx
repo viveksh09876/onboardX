@@ -4,10 +4,11 @@ import { useLabel } from "./useLabels";
 interface Props {
   field: FieldConfig;
   value: any;
+  error?: string;
   onChange: (val: any) => void;
 }
 
-const FieldRenderer = ({ field, value, onChange }: Props) => {
+const FieldRenderer = ({ field, value, error, onChange }: Props) => {
   const label = useLabel(field.labelKey);
 
   switch (field.type) {
@@ -20,6 +21,7 @@ const FieldRenderer = ({ field, value, onChange }: Props) => {
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
           />
+          {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         </div>
       );
 
@@ -39,6 +41,7 @@ const FieldRenderer = ({ field, value, onChange }: Props) => {
               </option>
             ))}
           </select>
+          {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         </div>
       );
 
