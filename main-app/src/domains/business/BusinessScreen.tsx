@@ -1,47 +1,46 @@
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../store/hooks";
-import { updateDomainData } from "../../store/formSlice";
+import { useEffect } from "react";
+import { useQuery } from "@apollo/client/react";
+import { GET_DYNAMIC_QUESTIONS } from "../../graphql/queries/getDynamicQuestions";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { setDynamicQuestions } from "../../store/formSlice";
+import FormRenderer from "../../form-engine/FormRenderer";
+import { businessFormConfig } from "./business.form";
+import type {
+  GetDynamicQuestionsResponse,
+  GetDynamicQuestionsVars,
+} from "../../graphql/types";
 
 const BusinessScreen = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const input = useAppSelector((s) => s.form.formData.personal);
 
-  const handleNext = () => {
-    dispatch(
-      updateDomainData({
-        domain: "business",
-        data: {
-          businessType: "IT Services",
-        },
-      })
-    );
+  const { data } = useQuery<
+    GetDynamicQuestionsResponse,
+    GetDynamicQuestionsVars
+  >(GET_DYNAMIC_QUESTIONS, {
+    variables: {
+      domain: "business",
+      input,
+    },
+  });
 
-    navigate("/teams");
-  };
-
-  const handleBack = () => {
-    navigate("/personal");
-  };
+  useEffect(() => {
+    if (data?.getDynamicQuestions) {
+      dispatch(
+        setDynamicQuestions({
+          domain: "business",
+          questions: data.getDynamicQuestions,
+        })
+      );
+    }
+  }, [data, dispatch]);
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Business Details</h2>
-
-      <p className="mb-4">Business form fields go here</p>
-
-      <div className="flex gap-2">
-        <button onClick={handleBack} className="bg-gray-300 px-4 py-2 rounded">
-          Back
-        </button>
-
-        <button
-          onClick={handleNext}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Next
-        </button>
-      </div>
-    </div>
+    <FormRenderer
+      domain="business"
+      config={businessFormConfig}
+      nextRoute="/teams"
+    />
   );
 };
 

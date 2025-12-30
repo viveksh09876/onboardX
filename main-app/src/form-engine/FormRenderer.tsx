@@ -1,10 +1,14 @@
 import type { FormConfig } from "./types";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { updateDomainData } from "../store/formSlice";
+import {
+  updateDomainData,
+  updateDynamicAnswer,
+  setErrors,
+  clearErrors,
+} from "../store/formSlice";
 import { isFieldVisible } from "./conditions";
 import FieldRenderer from "./FieldRenderer";
 import { validateStep } from "./validation/validateStep";
-import { setErrors, clearErrors } from "../store/formSlice";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -18,6 +22,18 @@ const FormRenderer = ({ domain, config, nextRoute }: Props) => {
   const domainData = useAppSelector((s) => s.form.formData[domain]);
   const navigate = useNavigate();
   const errors = useAppSelector((s) => s.form.errors[domain]);
+
+  const dynamicQuestions = useAppSelector(
+    (s) => s.form.additionalQuestions[domain] || []
+  );
+
+  const allFields = [
+    ...config.fields,
+    ...dynamicQuestions.map((q) => ({
+      ...q,
+      id: q.questionId,
+    })),
+  ];
 
   const updateField = (id: string, value: any) => {
     dispatch(clearErrors({ domain }));
@@ -43,17 +59,33 @@ const FormRenderer = ({ domain, config, nextRoute }: Props) => {
 
   return (
     <div className="space-y-4">
-      {config.fields
+      {allFields
         .filter((f) => isFieldVisible(f, domainData))
         .map((field) => (
           <FieldRenderer
             key={field.id}
             field={field}
-            value={domainData[field.id]}
-            error={errors[field.id]}
-            onChange={(val) => updateField(field.id, val)}
+            value={
+              domainData[field.id] ??
+              dynamicQuestions.find((q) => q.questionId === field.id)?.answer
+            }
+            error={errors?.[field.id]}
+            onChange={(val) => {
+              if (field.questionId) {
+                dispatch(
+                  updateDynamicAnswer({
+                    domain,
+                    questionId: field.id,
+                    value: val,
+                  })
+                );
+              } else {
+                updateField(field.id, val);
+              }
+            }}
           />
         ))}
+
       <div className="flex justify-end pt-4">
         <button
           onClick={handleNext}

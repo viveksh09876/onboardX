@@ -5,7 +5,9 @@ export type Domain = "personal" | "business" | "teams" | "products";
 
 export interface FormState {
   formData: Record<Domain, Record<string, any>>;
-  additionalQuestions: any[];
+  additionalQuestions: {
+    [domain: string]: any[];
+  };
   errors: Record<Domain, Record<string, any>>;
 }
 
@@ -16,7 +18,7 @@ const initialState: FormState = {
     teams: {},
     products: {},
   },
-  additionalQuestions: [],
+  additionalQuestions: {},
   errors: {
     personal: {},
     business: {},
@@ -42,8 +44,31 @@ const formSlice = createSlice({
       };
     },
 
-    setAdditionalQuestions(state, action: PayloadAction<any[]>) {
-      state.additionalQuestions = action.payload;
+    setDynamicQuestions(
+      state,
+      action: PayloadAction<{
+        domain: string;
+        questions: any[];
+      }>
+    ) {
+      state.additionalQuestions[action.payload.domain] =
+        action.payload.questions;
+    },
+
+    updateDynamicAnswer(
+      state,
+      action: PayloadAction<{
+        domain: string;
+        questionId: string;
+        value: any;
+      }>
+    ) {
+      const list = state.additionalQuestions[action.payload.domain] || [];
+
+      const q = list.find((x) => x.questionId === action.payload.questionId);
+      if (q) {
+        q.answer = action.payload.value;
+      }
     },
 
     resetForm() {
@@ -68,7 +93,8 @@ const formSlice = createSlice({
 
 export const {
   updateDomainData,
-  setAdditionalQuestions,
+  setDynamicQuestions,
+  updateDynamicAnswer,
   resetForm,
   setErrors,
   clearErrors,

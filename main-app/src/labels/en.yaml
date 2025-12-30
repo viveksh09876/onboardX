@@ -1,0 +1,14 @@
+business:
+  businessType: Business Type
+  country: Country
+  gstNumber: GST Number
+  registrationNumber: Registration Number
+
+  types:
+    proprietorship: Proprietorship
+    partnership: Partnership
+    privateLtd: Private Limited
+
+countries:
+  india: India
+  us: United States
