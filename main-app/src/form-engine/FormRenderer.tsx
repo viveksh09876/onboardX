@@ -10,6 +10,10 @@ import { isFieldVisible } from "./conditions";
 import FieldRenderer from "./FieldRenderer";
 import { validateStep } from "./validation/validateStep";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client/react";
+import { SAVE_DRAFT } from "../graphql/mutations/applicationMutations";
+import type { SaveDraftResponse } from "../graphql/types";
+import { setApplicationMeta } from "../store/formSlice";
 
 interface Props {
   domain: "personal" | "business" | "teams" | "products";
@@ -22,6 +26,11 @@ const FormRenderer = ({ domain, config, nextRoute }: Props) => {
   const domainData = useAppSelector((s) => s.form.formData[domain]);
   const navigate = useNavigate();
   const errors = useAppSelector((s) => s.form.errors[domain]);
+  const [saveDraft] = useMutation<SaveDraftResponse>(SAVE_DRAFT);
+
+  const applicationId = useAppSelector((s) => s.form.applicationId);
+  const formData = useAppSelector((s) => s.form.formData);
+  const additionalQuestions = useAppSelector((s) => s.form.additionalQuestions);
 
   const dynamicQuestions = useAppSelector(
     (s) => s.form.additionalQuestions[domain] || []
@@ -40,21 +49,40 @@ const FormRenderer = ({ domain, config, nextRoute }: Props) => {
     dispatch(updateDomainData({ domain, data: { [id]: value } }));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const validationErrors = validateStep(config, domainData);
 
     if (Object.keys(validationErrors).length > 0) {
-      dispatch(
-        setErrors({
-          domain,
-          errors: validationErrors,
-        })
-      );
+      dispatch(setErrors({ domain, errors: validationErrors }));
       return;
     }
 
     dispatch(clearErrors({ domain }));
-    navigate(nextRoute);
+
+    const fullFormData = {
+      ...formData,
+      additionalQuestions,
+    };
+
+    const res = await saveDraft({
+      variables: {
+        input: {
+          applicationId,
+          formData: fullFormData,
+        },
+      },
+    });
+
+    if (res.data?.saveDraft) {
+      dispatch(
+        setApplicationMeta({
+          applicationId: res.data.saveDraft.applicationId,
+          version: res.data.saveDraft.version,
+        })
+      );
+
+      navigate(nextRoute);
+    }
   };
 
   return (

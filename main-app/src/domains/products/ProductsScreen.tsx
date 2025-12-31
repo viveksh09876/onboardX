@@ -1,22 +1,32 @@
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../store/hooks";
-import { updateDomainData } from "../../store/formSlice";
+import { useMutation } from "@apollo/client/react";
+import { SUBMIT_APPLICATION } from "../../graphql/mutations/applicationMutations";
+import { useAppSelector } from "../../store/hooks";
 
 const ProductsScreen = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [submit] = useMutation(SUBMIT_APPLICATION);
 
-  const handleNext = () => {
-    dispatch(
-      updateDomainData({
-        domain: "products",
-        data: {
-          name: "IT Services",
+  const applicationId = useAppSelector((s) => s.form.applicationId);
+
+  const formData = useAppSelector((s) => s.form.formData);
+
+  const additionalQuestions = useAppSelector((s) => s.form.additionalQuestions);
+
+  const handleSubmit = async () => {
+    await submit({
+      variables: {
+        input: {
+          applicationId,
+          formData: {
+            ...formData,
+            additionalQuestions,
+          },
         },
-      })
-    );
+      },
+    });
 
-    navigate("/teams");
+    navigate("/thank-you");
   };
 
   const handleBack = () => {
@@ -35,10 +45,10 @@ const ProductsScreen = () => {
         </button>
 
         <button
-          onClick={handleNext}
+          onClick={handleSubmit}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
-          Next
+          Submit
         </button>
       </div>
     </div>

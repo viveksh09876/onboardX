@@ -9,6 +9,8 @@ export interface FormState {
     [domain: string]: any[];
   };
   errors: Record<Domain, Record<string, any>>;
+  applicationId?: string;
+  currentVersion?: number;
 }
 
 const initialState: FormState = {
@@ -25,6 +27,8 @@ const initialState: FormState = {
     teams: {},
     products: {},
   },
+  applicationId: "",
+  currentVersion: 1,
 };
 
 const formSlice = createSlice({
@@ -88,6 +92,17 @@ const formSlice = createSlice({
     clearErrors(state, action: PayloadAction<{ domain: Domain }>) {
       state.errors[action.payload.domain] = {};
     },
+
+    setApplicationMeta(
+      state,
+      action: PayloadAction<{
+        applicationId: string;
+        version: number;
+      }>
+    ) {
+      state.applicationId = action.payload.applicationId;
+      state.currentVersion = action.payload.version;
+    },
   },
 });
 
@@ -98,6 +113,7 @@ export const {
   resetForm,
   setErrors,
   clearErrors,
+  setApplicationMeta,
 } = formSlice.actions;
 
 export default formSlice.reducer;
