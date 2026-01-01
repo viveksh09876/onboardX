@@ -1,65 +1,73 @@
-import { Suspense } from "react";
-import { MainApp } from "../modules/mainApp";
-import { AnalystApp } from "../modules/analystApp";
-import { QCApp } from "../modules/qcApp";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import ProtectedRoute from "../components/common/ProtectedRoute";
-import RoleGuard from "../components/common/RoleGuard";
-import { ROLES } from "../utils/roles";
-import AppLayout from "../components/layout/AppLayout";
+import Loader from "../components/common/Loader";
+
+// Pages
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import NotFound from "../pages/NotFound/NotFound";
 
-const AppRoutes: React.FC = () => {
+// MFEs
+const MainApp = lazy(() => import("mainApp/App"));
+const AnalystApp = lazy(() => import("analystApp/App"));
+const QCApp = lazy(() => import("qcApp/App"));
+
+const AppRoutes = () => {
   return (
-    <BrowserRouter>
+    <Suspense fallback={<Loader />}>
       <Routes>
+        {/* Public */}
         <Route path="/login" element={<Login />} />
+
+        {/* Default */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Dashboard (optional landing) */}
         <Route
-          path="/*"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <AppLayout>
-                <Routes>
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route
-                    path="main/*"
-                    element={
-                      <RoleGuard allowedRoles={[ROLES.USER]}>
-                        <Suspense fallback={<div>Loading Main App...</div>}>
-                          <MainApp />
-                        </Suspense>
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="analyst/*"
-                    element={
-                      <RoleGuard allowedRoles={[ROLES.ANALYST]}>
-                        <Suspense fallback={<div>Loading Analyst App...</div>}>
-                          <AnalystApp />
-                        </Suspense>
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="qc/*"
-                    element={
-                      <RoleGuard allowedRoles={[ROLES.QC]}>
-                        <Suspense fallback={<div>Loading QC App...</div>}>
-                          <QCApp />
-                        </Suspense>
-                      </RoleGuard>
-                    }
-                  />
-                  <Route path="*" element={<div>Page not found</div>} />
-                </Routes>
-              </AppLayout>
+              <Dashboard />
             </ProtectedRoute>
           }
         />
+
+        {/* Main App */}
+        <Route
+          path="/main/*"
+          element={
+            <ProtectedRoute roles={["USER"]}>
+              <MainApp />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Analyst */}
+        <Route
+          path="/analyst/*"
+          element={
+            <ProtectedRoute roles={["ANALYST"]}>
+              <AnalystApp />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* QC */}
+        <Route
+          path="/qc/*"
+          element={
+            <ProtectedRoute roles={["QC"]}>
+              <QCApp />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fallback */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </Suspense>
   );
 };
 
