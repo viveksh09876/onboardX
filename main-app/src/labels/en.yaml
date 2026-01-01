@@ -12,3 +12,21 @@ business:
 countries:
   india: India
   us: United States
+
+teams:
+  teamSize: Team Size
+  hasRemoteMembers: Remote Team Members?
+  remoteCountries: Remote Countries
+
+products:
+  productType: Product Type
+  monthlyRevenue: Monthly Revenue
+
+  types:
+    saas: SaaS
+    marketplace: Marketplace
+    fintech: FinTech
+
+common:
+  yes: Yes
+  no: No

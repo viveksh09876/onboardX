@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
+
+import FormRenderer from "../../form-engine/FormRenderer";
+import { productsFormConfig } from "./products.form";
 import { SUBMIT_APPLICATION } from "../../graphql/mutations/applicationMutations";
+
 import { useAppSelector } from "../../store/hooks";
 
 const ProductsScreen = () => {
@@ -29,26 +33,22 @@ const ProductsScreen = () => {
     navigate("/thank-you");
   };
 
-  const handleBack = () => {
-    navigate("/teams");
-  };
-
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Products Details</h2>
+      <h2 className="text-xl font-semibold mb-4">Product Details</h2>
 
-      <p className="mb-4">Products form fields go here</p>
+      <FormRenderer
+        domain="products"
+        config={productsFormConfig}
+        nextRoute="" // not used on last step
+      />
 
-      <div className="flex gap-2">
-        <button onClick={handleBack} className="bg-gray-300 px-4 py-2 rounded">
-          Back
-        </button>
-
+      <div className="flex justify-end mt-6">
         <button
           onClick={handleSubmit}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-green-600 text-white px-6 py-2 rounded"
         >
-          Submit
+          Submit Application
         </button>
       </div>
     </div>
