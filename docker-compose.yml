@@ -1,13 +1,59 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  mongodb:
-    image: mongo:7.0
+  mongo:
+    image: mongo:7
     container_name: onboardx-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+
+  api:
+    build: ./onboardx-api
+    container_name: onboardx-api
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./onboardx-api/.env
+    depends_on:
+      - mongo
+
+  host-app:
+    build: ./host-app
+    container_name: onboardx-host
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_MAIN_APP_URL: http://main-app:5001/remoteEntry.js
+      VITE_ANALYST_APP_URL: http://analyst-app:5002/remoteEntry.js
+      VITE_QC_APP_URL: http://qc-app:5003/remoteEntry.js
+    depends_on:
+      - api
+
+  main-app:
+    build: ./main-app
+    container_name: onboardx-main
+    ports:
+      - "5001:5001"
+    depends_on:
+      - api
+
+  analyst-app:
+    build: ./analyst-app
+    container_name: onboardx-analyst
+    ports:
+      - "5002:5002"
+    depends_on:
+      - api
+
+  qc-app:
+    build: ./qc-app
+    container_name: onboardx-qc
+    ports:
+      - "5003:5003"
+    depends_on:
+      - api
 
 volumes:
   mongo_data:

@@ -6,7 +6,6 @@ import Loader from "../components/common/Loader";
 
 // Pages
 import Login from "../pages/Login/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
 import NotFound from "../pages/NotFound/NotFound";
 
 // MFEs
@@ -22,17 +21,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
 
         {/* Default */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-        {/* Dashboard (optional landing) */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<Navigate to="/main" replace />} />
 
         {/* Main App */}
         <Route

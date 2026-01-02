@@ -1,23 +1,27 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import federation from "@originjs/vite-plugin-federation";
-import tailwindcss from "@tailwindcss/vite";
+import { federation } from "@module-federation/vite";
 
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
     federation({
       name: "qcApp",
       filename: "remoteEntry.js",
+      publicPath: "http://localhost:5003/",
       exposes: {
         "./App": "./src/App.tsx",
       },
-      shared: ["react", "react-dom", "react-router-dom"],
+      shared: {
+        react: { singleton: true },
+        "react-dom": { singleton: true },
+        "react-router-dom": { singleton: true },
+      },
     }),
   ],
   server: {
     port: 5003,
+    host: "0.0.0.0",
   },
   build: {
     target: "esnext",
