@@ -8,9 +8,9 @@ export default defineConfig({
     federation({
       name: "host",
       remotes: {
-        mainApp: "http://localhost:5001/remoteEntry.js",
-        analystApp: "http://localhost:5002/remoteEntry.js",
-        qcApp: "http://localhost:5003/remoteEntry.js",
+        mainApp: "/main/remoteEntry.js",
+        analystApp: "/analyst/remoteEntry.js",
+        qcApp: "/qc/remoteEntry.js",
       },
       shared: {
         react: { singleton: true },

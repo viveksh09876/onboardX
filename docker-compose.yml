@@ -1,59 +1,109 @@
-version: "3.9"
-
 services:
-  mongo:
-    image: mongo:7
+  # ----------------------------
+  # Reverse Proxy (Single Entry)
+  # ----------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: onboardx-nginx
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - host-app
+      - main-app
+      - analyst-app
+      - qc-app
+    networks:
+      - onboardx-net
+
+  # ----------------------------
+  # Host App (Shell / Router)
+  # ----------------------------
+  host-app:
+    build:
+      context: ./host-app
+    container_name: onboardx-host
+    expose:
+      - "3000"
+    networks:
+      - onboardx-net
+
+  # ----------------------------
+  # Main App (User / Onboarding)
+  # ----------------------------
+  main-app:
+    build:
+      context: ./main-app
+    container_name: onboardx-main
+    expose:
+      - "5001"
+    networks:
+      - onboardx-net
+
+  # ----------------------------
+  # Analyst App
+  # ----------------------------
+  analyst-app:
+    build:
+      context: ./analyst-app
+    container_name: onboardx-analyst
+    expose:
+      - "5002"
+    networks:
+      - onboardx-net
+
+  # ----------------------------
+  # QC App
+  # ----------------------------
+  qc-app:
+    build:
+      context: ./qc-app
+    container_name: onboardx-qc
+    expose:
+      - "5003"
+    networks:
+      - onboardx-net
+
+  # ----------------------------
+  # Backend API
+  # ----------------------------
+  onboardx-api:
+    build:
+      context: ./onboardx-api
+    container_name: onboardx-api
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URI=mongodb://onboardx-mongo:27017/onboardx
+      - JWT_SECRET=supersecret
+    depends_on:
+      - onboardx-mongo
+    networks:
+      - onboardx-net
+
+  # ----------------------------
+  # MongoDB
+  # ----------------------------
+  onboardx-mongo:
+    image: mongo:6
     container_name: onboardx-mongo
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - mongo-data:/data/db
+    networks:
+      - onboardx-net
 
-  api:
-    build: ./onboardx-api
-    container_name: onboardx-api
-    ports:
-      - "4000:4000"
-    env_file:
-      - ./onboardx-api/.env
-    depends_on:
-      - mongo
+# ----------------------------
+# Shared Network
+# ----------------------------
+networks:
+  onboardx-net:
+    driver: bridge
 
-  host-app:
-    build: ./host-app
-    container_name: onboardx-host
-    ports:
-      - "3000:3000"
-    environment:
-      VITE_MAIN_APP_URL: http://main-app:5001/remoteEntry.js
-      VITE_ANALYST_APP_URL: http://analyst-app:5002/remoteEntry.js
-      VITE_QC_APP_URL: http://qc-app:5003/remoteEntry.js
-    depends_on:
-      - api
-
-  main-app:
-    build: ./main-app
-    container_name: onboardx-main
-    ports:
-      - "5001:5001"
-    depends_on:
-      - api
-
-  analyst-app:
-    build: ./analyst-app
-    container_name: onboardx-analyst
-    ports:
-      - "5002:5002"
-    depends_on:
-      - api
-
-  qc-app:
-    build: ./qc-app
-    container_name: onboardx-qc
-    ports:
-      - "5003:5003"
-    depends_on:
-      - api
-
+# ----------------------------
+# Volumes
+# ----------------------------
 volumes:
-  mongo_data:
+  mongo-data:
