@@ -1,5 +1,5 @@
 import yaml from "yaml";
-import labelsRaw from "../labels/en.yaml?raw";
+import labelsRaw from "../labels/en.yaml";
 
 const labels = yaml.parse(labelsRaw);
 

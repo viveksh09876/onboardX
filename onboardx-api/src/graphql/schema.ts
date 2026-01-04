@@ -31,10 +31,31 @@ const typeDefs = gql`
         answer: JSON
     }
 
+    type ApplicationResult {
+        applicationId: String!
+        version: Int!
+        status: String!
+    }
+
+    input SaveDraftInput {
+        domain: String!
+        data: JSON!
+        applicationId: String
+    }
+
+    input SubmitInput {
+        applicationId: String!
+    }
+
     type Query {
         getCountries: [ReferenceItem!]!
         getDynamicQuestions(screen: String!, previousData: JSON): [AdditionalQuestion!]!
         getApplicationVersion(id: ID!, version: Int!): JSON
+    }
+
+    type Mutation {
+        saveDraft(input: SaveDraftInput!): ApplicationResult!
+        submitApplication(input: SubmitInput!): ApplicationResult!
     }
 `;
 

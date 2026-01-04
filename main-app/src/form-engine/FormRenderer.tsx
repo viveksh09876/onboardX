@@ -67,8 +67,9 @@ const FormRenderer = ({ domain, config, nextRoute }: Props) => {
     const res = await saveDraft({
       variables: {
         input: {
-          applicationId,
-          formData: fullFormData,
+          applicationId: applicationId || null,
+          domain,
+          data: fullFormData,
         },
       },
     });

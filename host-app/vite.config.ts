@@ -8,9 +8,9 @@ export default defineConfig({
     federation({
       name: "host",
       remotes: {
-        mainApp: "/main/remoteEntry.js",
-        analystApp: "/analyst/remoteEntry.js",
-        qcApp: "/qc/remoteEntry.js",
+        mainApp: "http://localhost:3000/main/remoteEntry.js",
+        analystApp: "http://localhost:3000/analyst/remoteEntry.js",
+        qcApp: "http://localhost:3000/qc/remoteEntry.js",
       },
       shared: {
         react: { singleton: true },
@@ -20,7 +20,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    target: "esnext",
+    target: "chrome89",
   },
   server: {
     port: 3000,

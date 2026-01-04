@@ -3,12 +3,13 @@ import react from "@vitejs/plugin-react";
 import { federation } from "@module-federation/vite";
 
 export default defineConfig({
+  base: "/analyst/",
   plugins: [
     react(),
     federation({
       name: "analystApp",
       filename: "remoteEntry.js",
-      publicPath: "http://localhost:5002/",
+      publicPath: "/analyst/",
       exposes: {
         "./App": "./src/App.tsx",
       },
@@ -24,6 +25,18 @@ export default defineConfig({
     host: "0.0.0.0",
   },
   build: {
-    target: "esnext",
+    target: "chrome89",
+    rollupOptions: {
+      output: {
+        format: "es",
+        entryFileNames: "assets/[name].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash][extname]",
+        sanitizeFileName: (name) => name.replace(/\x00/g, "").replace(/\.cjs$/, ""),
+      },
+    },
+  },
+  preview: {
+    cors: true,
   },
 });

@@ -19,8 +19,8 @@ const BusinessScreen = () => {
     GetDynamicQuestionsVars
   >(GET_DYNAMIC_QUESTIONS, {
     variables: {
-      domain: "business",
-      input,
+      screen: "business",
+      previousData: input,
     },
   });
 

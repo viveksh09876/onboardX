@@ -38,6 +38,30 @@ const resolvers = {
             if (!appVer) return null;
             return appVer.formData ?? null;
         }
+    },
+
+    Mutation: {
+        saveDraft: async (_parent: unknown, args: { input: { domain: string, data: any, applicationId?: string } }, context: GraphQLContext) => {
+            const user = requireAuth(context);
+            // Mock implementation to enable frontend progress
+            // In real app, save to DB using context.models.Application
+            console.log("Saving draft:", args.input);
+            return {
+                applicationId: args.input.applicationId || "mock-app-id-123",
+                version: 1,
+                status: "DRAFT"
+            };
+        },
+        submitApplication: async (_parent: unknown, args: { input: { applicationId: string } }, context: GraphQLContext) => {
+            const user = requireAuth(context);
+            // Mock implementation
+            console.log("Submitting app:", args.input);
+            return {
+                applicationId: args.input.applicationId,
+                version: 2,
+                status: "SUBMITTED"
+            };
+        }
     }
 };
 

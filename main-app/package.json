@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "start": "serve -s dist -p 5001"
   },
   "dependencies": {
     "@apollo/client": "^4.0.11",
@@ -21,20 +21,26 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@module-federation/vite": "^1.9.4",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.23",
+    "css-loader": "^6.10.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "html-webpack-plugin": "^5.6.0",
     "postcss": "^8.5.6",
+    "postcss-loader": "^8.1.1",
+    "serve": "^14.2.0",
+    "style-loader": "^3.3.4",
     "tailwindcss": "^3.4.17",
+    "ts-loader": "^9.5.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "4.5.3"
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.2"
   }
 }

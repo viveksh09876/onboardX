@@ -1,3 +1,7 @@
+personal:
+  country: Country of Residence
+  pan: Permanent Account Number (PAN)
+
 business:
   businessType: Business Type
   country: Country

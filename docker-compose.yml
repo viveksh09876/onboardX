@@ -26,6 +26,8 @@ services:
     container_name: onboardx-host
     expose:
       - "3000"
+    volumes:
+      - ./host-app/src:/app/src
     networks:
       - onboardx-net
 
@@ -38,6 +40,8 @@ services:
     container_name: onboardx-main
     expose:
       - "5001"
+    volumes:
+      - ./main-app/src:/app/src
     networks:
       - onboardx-net
 
@@ -50,6 +54,8 @@ services:
     container_name: onboardx-analyst
     expose:
       - "5002"
+    volumes:
+      - ./analyst-app/src:/app/src
     networks:
       - onboardx-net
 
@@ -62,6 +68,8 @@ services:
     container_name: onboardx-qc
     expose:
       - "5003"
+    volumes:
+      - ./qc-app/src:/app/src
     networks:
       - onboardx-net
 
@@ -69,9 +77,7 @@ services:
   # Backend API
   # ----------------------------
   onboardx-api:
-    build:
-      context: ./onboardx-api
-    container_name: onboardx-api
+    build: ./onboardx-api
     ports:
       - "4000:4000"
     environment:

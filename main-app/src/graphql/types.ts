@@ -10,13 +10,14 @@ export interface GetDynamicQuestionsResponse {
 }
 
 export interface GetDynamicQuestionsVars {
-  domain: string;
-  input: any;
+  screen: string;
+  previousData: any;
 }
 
 export interface SaveDraftInput {
+  domain: string;
+  data: any;
   applicationId?: string;
-  formData: any;
 }
 
 export interface SaveDraftResponse {

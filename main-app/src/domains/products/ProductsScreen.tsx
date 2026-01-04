@@ -3,12 +3,13 @@ import { useMutation } from "@apollo/client/react";
 
 import FormRenderer from "../../form-engine/FormRenderer";
 import { productsFormConfig } from "./products.form";
-import { SUBMIT_APPLICATION } from "../../graphql/mutations/applicationMutations";
+import { SUBMIT_APPLICATION, SAVE_DRAFT } from "../../graphql/mutations/applicationMutations";
 
 import { useAppSelector } from "../../store/hooks";
 
 const ProductsScreen = () => {
   const navigate = useNavigate();
+  const [saveDraft] = useMutation(SAVE_DRAFT);
   const [submit] = useMutation(SUBMIT_APPLICATION);
 
   const applicationId = useAppSelector((s) => s.form.applicationId);
@@ -18,14 +19,25 @@ const ProductsScreen = () => {
   const additionalQuestions = useAppSelector((s) => s.form.additionalQuestions);
 
   const handleSubmit = async () => {
+    // 1. Save current state
+    await saveDraft({
+      variables: {
+        input: {
+          applicationId,
+          domain: "products",
+          data: {
+            ...formData,
+            additionalQuestions,
+          },
+        },
+      },
+    });
+
+    // 2. Submit application
     await submit({
       variables: {
         input: {
           applicationId,
-          formData: {
-            ...formData,
-            additionalQuestions,
-          },
         },
       },
     });
